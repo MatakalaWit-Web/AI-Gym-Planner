@@ -3,13 +3,16 @@ import { useAuth } from '../context/AuthContext';
 import { Card } from '../componets/ui/Card';
 import { Select } from '../componets/ui/Select';
 import { useState } from 'react';
+import { Textarea } from '../componets/ui/Textarea';
+import { Button } from '../componets/ui/Button';
+import { ArrowRight } from 'lucide-react';
 
 const goalOptions = [
   { value: 'lose_weight', label: 'Lose Weight' },
   { value: 'build_muscle', label: 'Build Muscle' },
   { value: 'improve_endurance', label: 'Improve Endurance' },
   { value: 'general_fitness', label: 'General Fitness' },
-  {value: 'cut', label: 'Loose body fat'},
+  { value: 'cut', label: 'Loose body fat' },
 ];
 
 
@@ -61,23 +64,32 @@ const Onboarding = () => {
 
   const { user } = useAuth();
 
-  const{formData, setFormData} = useState({
-    goal: '',
-    experience: '',
-    daysPerWeek: '',
-    equipment: '',
-    sessionDuration: '',
-    split: '',
+  const [formData, setFormData] = useState({
+    goal: 'bulk',
+    experience: 'intermediate',
+    daysPerWeek: '4',
+    equipment: 'full_gym',
+    sessionDuration: '60',
+    split: 'upper_lower',
+    injuries: ''
 
   });
 
-  function updateForm(field: string, value: string){
-    setFormData((prev) => ({...prev, [field]: value}));
+  function updateForm(field: string, value: string) {
+    setFormData((prev) => ({ ...prev, [field]: value }));
 
   }
 
 
-  if(!user){
+  async function handleQuestionaire(e: React.SubmitEvent) {
+    e.preventDefault();
+
+  }
+
+
+
+
+  if (!user) {
     return <RedirectToSignIn></RedirectToSignIn>
   }
   return (
@@ -90,13 +102,77 @@ const Onboarding = () => {
           <Card variant='bordered'>
             <h1 className='text-2xl font-bold mb-2'>Tell us about your goals</h1>
             <p className='text-[var(--color-muted)] mb-6'>Lets create a perfect plan for you.</p>
-             <form>
-              <Select id="goals" 
-              label='What are your goals?' 
-              options={goalOptions}
-              value={formData.goal}
-              onChange={(e) => updateForm('goal', e.target.value)}></Select>
-             </form>
+            <form onSubmit={handleQuestionaire} className='space-y-3'>
+              <Select id="goals"
+                label='What are your goals?'
+                options={goalOptions}
+                value={formData.goal}
+                onChange={(e) => updateForm('goal', e.target.value)}>
+              </Select>
+
+              <div className='grid grid-cols-2 gap-3'>
+
+
+                <Select id="experience"
+                  label='Experience level?'
+                  options={experienceOptions}
+                  value={formData.experience}
+                  onChange={(e) => updateForm('experience', e.target.value)}>
+                </Select>
+
+                <Select id="daysPerWeek"
+                  label='days per week'
+                  options={daysOptions}
+                  value={formData.daysPerWeek}
+                  onChange={(e) => updateForm('daysPerWeek', e.target.value)}>
+                </Select>
+
+
+              </div>
+
+
+
+
+              <Select id="sessionDuration"
+                label='How long do you want each session to be?'
+                options={sessionOptions}
+                value={formData.sessionDuration}
+                onChange={(e) => updateForm('sessionDuration', e.target.value)}>
+              </Select>
+
+              <Select id="split"
+                label='What is your preferred training split?'
+                options={splitOptions}
+                value={formData.split}
+                onChange={(e) => updateForm('split', e.target.value)}>
+              </Select>
+
+
+              <Select id="equipment"
+                label='What equipment do you have access to?'
+                options={equipmentOptions}
+                value={formData.equipment}
+                onChange={(e) => updateForm('equipment', e.target.value)}>
+              </Select>
+
+              <Textarea id='injuries'
+                label='Any injuries or limitations?(optional)'
+                placeholder='E.g., lower back issues, shoulder impingement'
+
+                rows={4}
+                value={formData.injuries}
+                onChange={(e) => updateForm('injuries', e.target.value)}>
+
+              </Textarea>
+
+              <div className='flex gap-3 pt-2 '>
+                <Button type='submit' className='flex-1 gap-2'>
+                  Genarate my plan <ArrowRight className='w-4 h-4'></ArrowRight>
+                </Button>
+              </div>
+
+
+            </form>
           </Card>
 
 
@@ -104,7 +180,7 @@ const Onboarding = () => {
         </div>
       </div>
     </SignedIn>
-   
+
   )
 }
 
