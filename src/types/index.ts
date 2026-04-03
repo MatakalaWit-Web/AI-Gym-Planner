@@ -3,3 +3,7 @@ export interface User {
     email: string;
     createAt: string
 }
+
+export interface UserProfile {
+    
+}

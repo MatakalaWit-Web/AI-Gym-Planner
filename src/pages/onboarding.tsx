@@ -62,7 +62,7 @@ const splitOptions = [
 const Onboarding = () => {
 
 
-  const { user } = useAuth();
+  const { user, saveProfile} = useAuth();
 
   const [formData, setFormData] = useState({
     goal: 'bulk',
