@@ -27,4 +27,3 @@ dist-ssr
 #ignore
 
 .env
-/server/.env

@@ -6,7 +6,7 @@ import { create } from 'node:domain';
 
 export const profileRouter = Router();
 
-profileRouter.post("/", (req: Request, res: Response) => {
+profileRouter.post("/", async (req: Request, res: Response) => {
   try {
     const { userId, ...profileData } = req.body;
 
@@ -39,7 +39,7 @@ profileRouter.post("/", (req: Request, res: Response) => {
       return res.status(400).json({error: "Missing required fields"});
     }
 
-    await prisma.user_profiles.upsert({
+     await prisma.user_profiles.upsert({
       where: {user_id: userId},
       update: {
       goal,

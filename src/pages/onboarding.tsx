@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Textarea } from '../componets/ui/Textarea';
 import { Button } from '../componets/ui/Button';
 import { ArrowRight } from 'lucide-react';
+import type { User, UserProfile } from '../types';
 
 const goalOptions = [
   { value: 'lose_weight', label: 'Lose Weight' },
@@ -62,7 +63,7 @@ const splitOptions = [
 const Onboarding = () => {
 
 
-  const { user, saveProfile} = useAuth();
+  const { user, saveProfile } = useAuth();
 
   const [formData, setFormData] = useState({
     goal: 'bulk',
@@ -83,6 +84,18 @@ const Onboarding = () => {
 
   async function handleQuestionaire(e: React.SubmitEvent) {
     e.preventDefault();
+
+    const profile: Omit<UserProfile, "userId" | "updateAt"> = {
+      goal: formData.goal as UserProfile["goal"],
+      experience: formData.experience as UserProfile["experience"],
+      daysPerWeek: parseInt(formData.daysPerWeek),
+      equipment: formData.equipment as UserProfile["equipment"],
+      sessionDuration: parseInt(formData.sessionDuration),
+      split: formData.split as UserProfile["split"],
+      injuries: formData.injuries || undefined
+    };
+
+    saveProfile(profile)
 
   }
 
