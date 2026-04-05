@@ -2,10 +2,10 @@ import { RedirectToSignIn, SignedIn } from '@neondatabase/neon-js/auth/react';
 import { useAuth } from '../context/AuthContext';
 import { Card } from '../componets/ui/Card';
 import { Select } from '../componets/ui/Select';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Textarea } from '../componets/ui/Textarea';
 import { Button } from '../componets/ui/Button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 import type { User, UserProfile } from '../types';
 
 const goalOptions = [
@@ -76,6 +76,9 @@ const Onboarding = () => {
 
   });
 
+  const [isGenerating, setIsGenarating] = useState(false);
+  const [error, setError] = useState("");
+
   function updateForm(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
 
@@ -94,8 +97,19 @@ const Onboarding = () => {
       split: formData.split as UserProfile["split"],
       injuries: formData.injuries || undefined
     };
+    try {
+      await saveProfile(profile);
+      setIsGenarating(true)
 
-    saveProfile(profile)
+    }
+    catch (err) {
+      setError(err instanceof Error ? err.message : 'Faied to save profile');
+
+    }
+    finally {
+      setIsGenarating(false)
+    }
+
 
   }
 
@@ -112,7 +126,7 @@ const Onboarding = () => {
 
 
 
-          <Card variant='bordered'>
+          {!isGenerating ? ( <Card variant='bordered'>
             <h1 className='text-2xl font-bold mb-2'>Tell us about your goals</h1>
             <p className='text-[var(--color-muted)] mb-6'>Lets create a perfect plan for you.</p>
             <form onSubmit={handleQuestionaire} className='space-y-3'>
@@ -186,7 +200,16 @@ const Onboarding = () => {
 
 
             </form>
-          </Card>
+          </Card>) : (
+            <Card variant='bordered ' className='text-center py-16'>
+
+              <Loader2 className='w-12 h-12 text-[var(--color-accent)] mx-auto mb-6 animate-spin'></Loader2>
+              <h1 className='text-2xl font-bold mb-2'>Creating your plan</h1>
+              <p className='text-[var(--colo-muted)]'>Our AI is building your personolized tranining plan</p>
+            </Card>
+
+
+          )}
 
 
 
