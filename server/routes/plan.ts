@@ -23,7 +23,7 @@ planRouter.post('/generate', async (req: Request, res: Response) => {
 
     if (!profile) {
       return res.status(400).json({ error: "User profile not found. Complete onbording first" })
-    }
+    };
 
     const latestPlan = await prisma.training_plans.findFirst({
       where: { user_id: userId },
