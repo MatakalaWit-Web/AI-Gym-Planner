@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Card } from '../componets/ui/Card';
 import { Select } from '../componets/ui/Select';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Textarea } from '../componets/ui/Textarea';
 import { Button } from '../componets/ui/Button';
 import { ArrowRight, Loader2 } from 'lucide-react';
@@ -63,7 +64,7 @@ const splitOptions = [
 const Onboarding = () => {
 
 
-  const { user, saveProfile } = useAuth();
+  const { user, saveProfile, generatePlan } = useAuth();
 
   const [formData, setFormData] = useState({
     goal: 'bulk',
@@ -78,6 +79,7 @@ const Onboarding = () => {
 
   const [isGenerating, setIsGenarating] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   function updateForm(field: string, value: string) {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -99,11 +101,13 @@ const Onboarding = () => {
     };
     try {
       await saveProfile(profile);
-      setIsGenarating(true)
+      setIsGenarating(true);
+      await generatePlan();
+      navigate("/profile");
 
     }
     catch (err) {
-      setError(err instanceof Error ? err.message : 'Faied to save profile');
+      setError(err instanceof Error ? err.message : 'Failed to save profile');
 
     }
     finally {
@@ -201,7 +205,7 @@ const Onboarding = () => {
 
             </form>
           </Card>) : (
-            <Card variant='bordered ' className='text-center py-16'>
+            <Card variant='bordered' className='text-center py-16'>
 
               <Loader2 className='w-12 h-12 text-[var(--color-accent)] mx-auto mb-6 animate-spin'></Loader2>
               <h1 className='text-2xl font-bold mb-2'>Creating your plan</h1>

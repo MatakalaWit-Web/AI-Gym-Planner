@@ -4,6 +4,8 @@ import { useAuth } from "../context/AuthContext";
 const Profile = () => {
   const { user, isLoading } = useAuth();
   const plan = false;
+
+
   if(!user && !isLoading){
     return (<Navigate to="/auth/sign-up" replace/>);
   }

@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from 'express';
-import { error, profile } from 'node:console';
+
 import { prisma } from '../lib/prisma';
-import { create } from 'node:domain';
+
 
 
 export const profileRouter = Router();
