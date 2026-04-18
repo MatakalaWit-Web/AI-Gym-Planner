@@ -20,7 +20,18 @@ async function post(path: string, body: object) {
 
 }
 
-async function get() { }
+async function get(path: string) { 
+    const res = await fetch(`${BASE_URL}/API${path}`);
+     if (!res.ok)
+        throw new Error(
+            (await res.json().catch(() => ({}))).error || "Request failed",
+
+        );
+
+    return res.json();
+
+
+}
 
 export const api = {
     saveProfile: (userId: string, profile: Omit<UserProfile, "userId" | "updatedAt">) => {
@@ -31,8 +42,13 @@ export const api = {
 
     generatePlan: (userId: string,) => {
        return post("/plan/generate", { userId });
-    }
+    },
 
-}
+
+    getCurrentPlan: (userId: string) => {
+      return get(`/plan/current?userId=${userId}`);
+    },
+
+};
 
 

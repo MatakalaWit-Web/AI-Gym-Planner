@@ -1,5 +1,4 @@
 import { Router, type Request, type Response } from 'express';
-import { error } from 'node:console';
 import { prisma } from '../lib/prisma';
 import { generateTrainingPlan } from '../lib/ai';
 
@@ -20,6 +19,8 @@ planRouter.post('/generate', async (req: Request, res: Response) => {
     const profile = await prisma.user_profiles.findUnique({
       where: { user_id: userId },
     });
+
+
 
     if (!profile) {
       return res.status(400).json({ error: "User profile not found. Complete onbording first" })
@@ -67,4 +68,42 @@ planRouter.post('/generate', async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to generate plan" });
   }
 
+});
+
+
+
+
+planRouter.get('/current', async (req: Request, res: Response) => {
+  try {
+    const userId  = req.query.userId as string;
+    
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" })
+    }
+
+    const currentPlan = await prisma.training_plans.findFirst({
+      where: { user_id: userId },
+      orderBy: { created_at: "desc" },
+    });
+
+    if (!currentPlan) {
+      return res.status(404).json({ error: "No training plan found" });
+
+    }
+
+    res.json({
+      id: currentPlan.id,
+      version: currentPlan.version,
+      createdAt: currentPlan.created_at,
+      planJson: currentPlan.plan_json,
+      userId: currentPlan.user_id,
+      planText: currentPlan.plan_text,
+
+    });
+
+  } catch (error) {
+    console.error("Error fetching current plan:", error);
+    res.status(500).json({ error: "Failed to fetch current plan" });
+  }
+  
 });

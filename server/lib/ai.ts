@@ -2,7 +2,6 @@ import OpenAI from "openai";
 import dotenv from 'dotenv';
 
 import { TrainingPlan, UserProfile } from "../types";
-import { profile } from "node:console";
 
 dotenv.config();
 
@@ -19,14 +18,14 @@ export async function generateTrainingPlan(profile: UserProfile |
     injuries: profile.injuries || null,
   };
 
-  const apikey = process.env.OPEN_ROUTER_KEY;
+  const openaiApiKey = process.env.OPEN_ROUTER_KEY || process.env.OPENAI_API_KEY;
 
-  if (!apikey) {
-    throw new Error("OPEN_ROUTER_KEY is not set i environment variable")
+  if (!openaiApiKey) {
+    throw new Error("OPEN_ROUTER_KEY or OPENAI_API_KEY is not set in environment variables")
   }
 
   const openai = new OpenAI({
-    apiKey,
+    apiKey: openaiApiKey,
     baseURL: "https://openrouter.ai/api/v1",
     defaultHeaders: {
       "HTTP-Referer": process.env.BASE_URL || "https://localhost:3001",
@@ -75,6 +74,7 @@ export async function generateTrainingPlan(profile: UserProfile |
 
   } catch (error) {
     console.error("[AI] Error generating training plan:", error);
+    throw error;
   }
 
 
@@ -144,7 +144,7 @@ function buildPrompt(profile: UserProfile): string {
     custom: "best split for their goals"
   };
 
-  return `Create a personalized ${profile.days_per_week}-day per week training plan for someone
+  return `Create a personalized ${profile.daysPerWeek}-day per week training plan for someone
     with the following profile:
     
       goal: ${goalMap[profile.goal] || profile.goal}
@@ -183,7 +183,7 @@ function buildPrompt(profile: UserProfile): string {
   "progression": "detailed progression strategy (2-3 sentences explaining how to progress)"
 }
 Rquirements:
-- Create exactly ${profile.days_per_week} workout days per week
+- Create exactly ${profile.daysPerWeek} workout days per week
 - Each workout should fit within ${profile.sessionDuration} minutes
 - Include 4-6 exercises per workout
 - RPE(Rate of Perceived Exertion) should be between 6-9 for main lifts
