@@ -30,7 +30,7 @@ export interface TrainingPlan{
 export interface DaySchedule {
     day: string;
     focus: string;
-    exercise: Excercise[];
+    exercises: Excercise[];
 }
 
 export interface Excercise{
@@ -48,4 +48,5 @@ export interface PlanOverview {
     frequency: string;
     split: string;
     notes: string;
+    version: number;
 }

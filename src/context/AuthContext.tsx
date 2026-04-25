@@ -57,6 +57,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         }
     }, [neonUser?.id, isLoading]);
 
+
+  
+
     // refresh data 
 
     const refreshData = useCallback(async () => {
