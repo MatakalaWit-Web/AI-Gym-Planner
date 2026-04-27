@@ -4,31 +4,33 @@ import { Card } from "../ui/Card";
 
 
 function ExerciseRow({ exercise, index }: { exercise: Excercise, index: number }) {
-    return (<tr>
+    return (<tr className="border-b border-[var(--color-border)] last:border-0">
 
-        <td>
-            <div>
-                <span>{index + 1}.</span>
+        <td className="py-3 pr-4 ">
+            <div className="flex items-start gap-3">
+                <span className="text-xs text-[var(--color-muted)] w-5">{index + 1}.</span>
                 <div>
-                    <p>{exercise.name}</p>
+                    <p className="font-medium">{exercise.name}</p>
                     {exercise.notes && (
-                        <p>
+                        <p className="text-xs text-[var(--color-muted)] flex items-center gap-1 mt-0.5">
                             <Info></Info>
                             {exercise.notes}
                         </p>
                     )}
                 </div>
             </div>
-            <td>
-                <span>{exercise.sets}</span>
-                <span> x </span>
+            <td className="py px-4 text-center whitespace-nowrap">
+                <span className="text-[var(--color-accent)] font-medium">{exercise.sets}</span>
+                <span className="text-[var(--color-muted)]"> x </span>
                 <span>{exercise.reps}</span>
             </td>
-            {exercise.rpe}
+            
 
-            <td> 
-                <span>{exercise.rest}</span>
+            <td className="py-3 px-4 text-center"> 
+                <span className="text-[var(--color-muted)]">{exercise.rest}</span>
             </td>
+
+            <td className={`inline-flex items-center justify-center w-8 h-8 rounded-lg text-sm font-medium ${exercise.rpe >= 8 ? `bg-red-500/10 text-red-400` : exercise.rpe >= 7 ? `bg-yellow-500/10 text-yellow-400` : `bg-green-500/10 text-green-400`}`}></td>
         </td>
 
     </tr>)
@@ -74,7 +76,7 @@ interface PlanDisplayProps {
 
 export function PlanDisplay({ weeklySchedule }: PlanDisplayProps) {
     return (
-        <div>
+        <div className="space-y-6 mb-8">
             {weeklySchedule.map((schedule, key) => (
                 <DayCard key={key} schedule={schedule} />
             ))}

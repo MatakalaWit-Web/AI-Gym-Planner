@@ -6,7 +6,7 @@ import { Card } from "../componets/ui/Card";
 import { PlanDisplay } from "../componets/plan/PlanDisplay";
 
 const Profile = () => {
-  const { user, isLoading, plan } = useAuth();
+  const { user, isLoading, plan, generatePlan } = useAuth();
 
   if (!user && !isLoading) {
     return (<Navigate to="/auth/sign-up" replace />);
@@ -38,7 +38,7 @@ const Profile = () => {
             <h1 className="text-3xl font-bold mb-1"> Your Training Plan</h1>
             <p className="text-[var(--color-muted)]">Version {plan.version} * Created {formatDate(plan.createdAt)}</p>
           </div>
-          <Button variant="secondary" className="gap-2">
+          <Button variant="secondary" className="gap-2" onClick={async () => await generatePlan()}>
             <RefreshCcw className="w-4 h-4" />
             Regenerate Plan
 
@@ -96,6 +96,11 @@ const Profile = () => {
 
         <h2 className="font-semibold text-xl mb-4">Weekly Schedule</h2>
         <PlanDisplay weeklySchedule={plan.weeklySchedule} />
+
+        <Card variant="bordered" className="mb-8">
+          <h2 className="font-semibold text-lg mb-2">Progression Strategy</h2>
+          <p className="text-[var(--color-muted)] text-sm leading-relaxed">{plan.progression}</p>
+        </Card>
 
 
       </div>
